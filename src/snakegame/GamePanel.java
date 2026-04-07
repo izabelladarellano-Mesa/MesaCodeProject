@@ -18,9 +18,7 @@
 * Version: 2026-04-06
 */
 package snakegame;
-
-/**
- import javax.swing.*;
+import javax.swing.*;
 import java.awt.*;
 
 /**
