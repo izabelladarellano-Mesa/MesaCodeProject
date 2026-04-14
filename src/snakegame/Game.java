@@ -18,6 +18,7 @@
 * Version: 2026-04-06
 */
 package snakegame;
+
 import javax.swing.JFrame;
 
 /**
@@ -25,10 +26,10 @@ import javax.swing.JFrame;
  * -----------------------------------
  * Responsibility:
  * - Entry point of the program
- * - Creates and displays the main game window (JFrame)
+ * - Creates and displays the main window (JFrame)
  *
  * Relationships:
- * - Uses (has-a) GamePanel
+ * - Has-a GamePanel (composition relationship)
  */
 public class Game {
 
@@ -40,21 +41,24 @@ public class Game {
      */
     public static void main(String[] args) {
 
-        // Create the main window (JFrame)
+        // Create main window
         JFrame frame = new JFrame("Snake Game");
 
-        // Create the game panel (View)
+        // Create GamePanel (View)
         GamePanel panel = new GamePanel();
 
         // Add panel to frame
         frame.add(panel);
 
-        // Set frame properties
-        frame.setSize(500, 500); // Window size
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close app on exit
-        frame.setResizable(false); // Prevent resizing
+        // Frame settings
+        frame.setSize(500, 500);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
 
-        // Make window visible
+        // Make visible BEFORE drawing (important)
         frame.setVisible(true);
+
+        // Draw test pattern so colors appear
+        panel.drawTestPattern();
     }
 }

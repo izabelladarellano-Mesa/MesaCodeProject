@@ -18,6 +18,7 @@
 * Version: 2026-04-06
 */
 package snakegame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -27,10 +28,11 @@ import java.awt.*;
  * Responsibility:
  * - Represents the game board (View in MVC)
  * - Displays a grid using JButtons
+ * - Provides methods to update and clear the board
  *
  * Relationships:
  * - Used by Game (Game has-a GamePanel)
- * - Will later interact with Snake, Food, and GameController
+ * - Will later collaborate with Snake, Food, GameController
  *
  * Learning Outcomes:
  * - LO2: Uses 2D arrays (JButton[][])
@@ -38,37 +40,37 @@ import java.awt.*;
  */
 public class GamePanel extends JPanel {
 
-    // Constants for grid size
+    // Constants defining board size
     private final int ROWS = 10;
     private final int COLS = 10;
 
-    // 2D array of buttons representing the grid
+    // 2D array representing the grid (GameBoard)
     private JButton[][] grid;
 
     /**
      * Constructor for GamePanel
      *
-     * Initializes the grid and sets up the layout
+     * Initializes the grid and layout
      *
      * @param none
      * @return none
      */
     public GamePanel() {
 
-        // Initialize the 2D array
+        // Initialize grid array
         grid = new JButton[ROWS][COLS];
 
-        // Set layout manager (GridLayout)
+        // Set layout manager
         setLayout(new GridLayout(ROWS, COLS));
 
-        // Create and add buttons to the panel
+        // Build the grid
         initializeGrid();
     }
 
     /**
-     * Initializes the grid of JButtons
+     * Initializes the grid of buttons
      *
-     * Each button represents one cell on the board
+     * Each JButton represents one cell on the board
      *
      * @param none
      * @return void
@@ -78,35 +80,89 @@ public class GamePanel extends JPanel {
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
 
-                // Create a new button
-                grid[r][c] = new JButton();
+            	grid[r][c] = new JButton();
 
-                // Set default appearance
-                grid[r][c].setBackground(Color.BLACK);
-                grid[r][c].setFocusable(false); // Prevents button focus highlight
+            	// Mac compatibility
+            	grid[r][c].setOpaque(true);
+            	grid[r][c].setContentAreaFilled(true);
 
-                // Optional: Add grid lines for better visibility
-                grid[r][c].setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            	// ❌ DO NOT turn off borders completely
+            	// grid[r][c].setBorderPainted(false);  ← remove or comment this out
 
-                // Add button to panel
+            	// Add grid lines
+            	grid[r][c].setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+            	// Default background
+            	grid[r][c].setBackground(Color.BLACK);
+
+            	grid[r][c].setFocusable(false);
+
+                // Add to panel
                 add(grid[r][c]);
             }
         }
     }
 
     /**
-     * Gets a button at a specific row and column
+     * Sets the color of a specific cell
+     *
+     * Used for:
+     * - Snake (green)
+     * - Food (red)
+     * - Empty space (black)
      *
      * @param row the row index
      * @param col the column index
-     * @return JButton at the specified position
+     * @param color the color to apply
+     * @return void
      */
-    public JButton getCell(int row, int col) {
-        return grid[row][col];
+    public void setCellColor(int row, int col, Color color) {
+        grid[row][col].setBackground(color);
     }
 
     /**
-     * Gets number of rows in the grid
+     * Clears the board (resets all cells to black)
+     *
+     * @param none
+     * @return void
+     */
+    public void clearBoard() {
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                grid[r][c].setBackground(Color.BLACK);
+            }
+        }
+    }
+
+    /**
+     * Draws a test pattern on the board
+     *
+     * This verifies that:
+     * - The grid is working
+     * - Colors display correctly
+     *
+     * @param none
+     * @return void
+     */
+    public void drawTestPattern() {
+
+        // Clear board first
+        clearBoard();
+
+        // Simulated snake (green)
+        setCellColor(5, 5, Color.GREEN);
+        setCellColor(5, 6, Color.GREEN);
+        setCellColor(5, 7, Color.GREEN);
+
+        // Simulated food (red)
+        setCellColor(3, 3, Color.RED);
+
+        // Force repaint (ensures update on Mac)
+        repaint();
+    }
+
+    /**
+     * Gets number of rows
      *
      * @param none
      * @return int number of rows
@@ -116,7 +172,7 @@ public class GamePanel extends JPanel {
     }
 
     /**
-     * Gets number of columns in the grid
+     * Gets number of columns
      *
      * @param none
      * @return int number of columns
