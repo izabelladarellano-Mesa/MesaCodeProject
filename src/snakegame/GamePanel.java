@@ -160,7 +160,6 @@ public class GamePanel extends JPanel {
         // Force repaint (ensures update on Mac)
         repaint();
     }
-
     /**
      * Gets number of rows
      *
@@ -180,4 +179,14 @@ public class GamePanel extends JPanel {
     public int getCols() {
         return COLS;
     }
+    /**
+     * Draws the snake on the board
+     *
+     * @param snake the Snake object
+     * @return void
+     */
+    public void drawSnake(Snake snake) {
+        snake.draw(this);
+    }
+    
 }

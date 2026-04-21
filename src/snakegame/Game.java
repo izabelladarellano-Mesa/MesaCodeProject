@@ -25,40 +25,33 @@ import javax.swing.JFrame;
  * Game class
  * -----------------------------------
  * Responsibility:
- * - Entry point of the program
- * - Creates and displays the main window (JFrame)
+ * - Starts the program
+ * - Creates window and runs basic snake test
  *
  * Relationships:
- * - Has-a GamePanel (composition relationship)
+ * - Has-a GamePanel
+ * - Uses Snake
  */
 public class Game {
 
-    /**
-     * Main method - starts the program
-     *
-     * @param args command-line arguments (not used)
-     * @return void
-     */
     public static void main(String[] args) {
 
-        // Create main window
         JFrame frame = new JFrame("Snake Game");
 
-        // Create GamePanel (View)
         GamePanel panel = new GamePanel();
 
-        // Add panel to frame
         frame.add(panel);
 
-        // Frame settings
         frame.setSize(500, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-
-        // Make visible BEFORE drawing (important)
         frame.setVisible(true);
 
-        // Draw test pattern so colors appear
-        panel.drawTestPattern();
+        // Create snake in middle
+        Snake snake = new Snake(5, 5);
+
+        // Draw snake
+        panel.clearBoard();
+        panel.drawSnake(snake);
     }
 }
