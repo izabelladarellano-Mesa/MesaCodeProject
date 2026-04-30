@@ -15,7 +15,7 @@
 *
 * <<Add more references here>>
 *
-* Version: 2026-04-06
+* Version: 2026-04-22
 */
 package snakegame;
 
@@ -25,12 +25,10 @@ import javax.swing.JFrame;
  * Game class
  * -----------------------------------
  * Responsibility:
- * - Starts the program
- * - Creates window and runs basic snake test
+ * - Starts program
  *
  * Relationships:
  * - Has-a GamePanel
- * - Uses Snake
  */
 public class Game {
 
@@ -46,12 +44,5 @@ public class Game {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
-
-        // Create snake in middle
-        Snake snake = new Snake(5, 5);
-
-        // Draw snake
-        panel.clearBoard();
-        panel.drawSnake(snake);
     }
 }

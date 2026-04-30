@@ -15,7 +15,7 @@
 *
 * <<Add more references here>>
 *
-* Version: 2026-04-06
+* Version: 2026-04-22
 */
 package snakegame;
 
@@ -26,53 +26,52 @@ import java.awt.*;
  * GamePanel class
  * -----------------------------------
  * Responsibility:
- * - Represents the game board (View in MVC)
- * - Displays a grid using JButtons
- * - Provides methods to update and clear the board
+ * - Displays board
+ * - Draws snake and food
+ * - Detects food collision
  *
  * Relationships:
- * - Used by Game (Game has-a GamePanel)
- * - Will later collaborate with Snake, Food, GameController
- *
- * Learning Outcomes:
- * - LO2: Uses 2D arrays (JButton[][])
- * - LO7: GUI with Swing (JPanel, GridLayout)
+ * - Has-a CellButton[][]
+ * - Has-a Snake
+ * - Has-a Food
  */
 public class GamePanel extends JPanel {
 
-    // Constants defining board size
     private final int ROWS = 10;
     private final int COLS = 10;
 
-    // 2D array representing the grid (GameBoard)
-    private JButton[][] grid;
+    private CellButton[][] grid;
+
+    private Snake snake;
+    private Food food;
+
+    private Timer timer;
 
     /**
-     * Constructor for GamePanel
+     * Constructor
      *
-     * Initializes the grid and layout
-     *
-     * @param none
-     * @return none
+     * Creates board, snake, food, timer
      */
     public GamePanel() {
 
-        // Initialize grid array
-        grid = new JButton[ROWS][COLS];
+        grid = new CellButton[ROWS][COLS];
 
-        // Set layout manager
         setLayout(new GridLayout(ROWS, COLS));
 
-        // Build the grid
         initializeGrid();
+
+        snake = new Snake(5, 5);
+
+        food = new Food();
+        food.spawn(ROWS, COLS);
+
+        timer = new Timer(300, e -> updateGame());
+        timer.start();
     }
 
     /**
-     * Initializes the grid of buttons
+     * Builds grid
      *
-     * Each JButton represents one cell on the board
-     *
-     * @param none
      * @return void
      */
     private void initializeGrid() {
@@ -80,40 +79,75 @@ public class GamePanel extends JPanel {
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
 
-            	grid[r][c] = new JButton();
-
-            	// Mac compatibility
-            	grid[r][c].setOpaque(true);
-            	grid[r][c].setContentAreaFilled(true);
-
-            	// ❌ DO NOT turn off borders completely
-            	// grid[r][c].setBorderPainted(false);  ← remove or comment this out
-
-            	// Add grid lines
-            	grid[r][c].setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-            	// Default background
-            	grid[r][c].setBackground(Color.BLACK);
-
-            	grid[r][c].setFocusable(false);
-
-                // Add to panel
+                grid[r][c] = new CellButton();
                 add(grid[r][c]);
             }
         }
     }
 
     /**
-     * Sets the color of a specific cell
+     * Updates game every timer tick
      *
-     * Used for:
-     * - Snake (green)
-     * - Food (red)
-     * - Empty space (black)
+     * @return void
+     */
+    private void updateGame() {
+
+        snake.move();
+
+        checkFoodCollision();
+
+        clearBoard();
+
+        drawFood();
+
+        drawSnake();
+    }
+
+    /**
+     * Checks if snake ate food
      *
-     * @param row the row index
-     * @param col the column index
-     * @param color the color to apply
+     * @return void
+     */
+    private void checkFoodCollision() {
+
+        if (snake.getHead().equals(food.getPosition())) {
+
+            snake.grow();
+
+            food.spawn(ROWS, COLS);
+        }
+    }
+
+    /**
+     * Draws snake
+     *
+     * @return void
+     */
+    private void drawSnake() {
+
+        for (Point p : snake.getBody()) {
+            setCellColor(p.y, p.x, Color.GREEN);
+        }
+    }
+
+    /**
+     * Draws food
+     *
+     * @return void
+     */
+    private void drawFood() {
+
+        Point p = food.getPosition();
+
+        setCellColor(p.y, p.x, Color.RED);
+    }
+
+    /**
+     * Sets cell color
+     *
+     * @param row row location
+     * @param col column location
+     * @param color color to use
      * @return void
      */
     public void setCellColor(int row, int col, Color color) {
@@ -121,72 +155,17 @@ public class GamePanel extends JPanel {
     }
 
     /**
-     * Clears the board (resets all cells to black)
+     * Clears board
      *
-     * @param none
      * @return void
      */
     public void clearBoard() {
+
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
-                grid[r][c].setBackground(Color.BLACK);
+
+                grid[r][c].clearCell();
             }
         }
     }
-
-    /**
-     * Draws a test pattern on the board
-     *
-     * This verifies that:
-     * - The grid is working
-     * - Colors display correctly
-     *
-     * @param none
-     * @return void
-     */
-    public void drawTestPattern() {
-
-        // Clear board first
-        clearBoard();
-
-        // Simulated snake (green)
-        setCellColor(5, 5, Color.GREEN);
-        setCellColor(5, 6, Color.GREEN);
-        setCellColor(5, 7, Color.GREEN);
-
-        // Simulated food (red)
-        setCellColor(3, 3, Color.RED);
-
-        // Force repaint (ensures update on Mac)
-        repaint();
-    }
-    /**
-     * Gets number of rows
-     *
-     * @param none
-     * @return int number of rows
-     */
-    public int getRows() {
-        return ROWS;
-    }
-
-    /**
-     * Gets number of columns
-     *
-     * @param none
-     * @return int number of columns
-     */
-    public int getCols() {
-        return COLS;
-    }
-    /**
-     * Draws the snake on the board
-     *
-     * @param snake the Snake object
-     * @return void
-     */
-    public void drawSnake(Snake snake) {
-        snake.draw(this);
-    }
-    
 }

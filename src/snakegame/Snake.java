@@ -15,136 +15,96 @@
 *
 * <<Add more references here>>
 *
-* Version: 2026-04-21
+* Version: 2026-04-22
 */
 package snakegame;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.LinkedList;
 
 /**
  * Snake class
  * -----------------------------------
  * Responsibility:
- * - Represents the snake in the game
- * - Stores snake body segments
+ * - Represents snake
  * - Handles movement and growth
  *
  * Relationships:
- * - Uses GamePanel to display itself (collaboration)
- * - Uses LinkedList<Point> to store body (data structure)
- *
- * Learning Outcomes:
- * - LO3: Objects and classes
- * - LO8: Generic collections (LinkedList)
+ * - GamePanel uses Snake
+ * - Uses LinkedList<Point>
  */
 public class Snake {
 
-    // LinkedList storing snake body positions
     private LinkedList<Point> body;
 
-    // Current direction of movement
-    private int dx; // change in x (columns)
-    private int dy; // change in y (rows)
+    private int dx;
+    private int dy;
+
+    private boolean grow;
 
     /**
-     * Constructor for Snake
+     * Constructor
      *
-     * Initializes snake with a starting position and direction
-     *
-     * @param startRow initial row position
-     * @param startCol initial column position
-     * @return none
+     * @param row starting row
+     * @param col starting column
      */
-    public Snake(int startRow, int startCol) {
+    public Snake(int row, int col) {
 
         body = new LinkedList<>();
 
-        // Add initial head position
-        body.add(new Point(startCol, startRow));
+        body.add(new Point(col, row));
 
-        // Initial direction: moving right
         dx = 1;
         dy = 0;
+
+        grow = false;
     }
 
     /**
-     * Moves the snake forward
+     * Moves snake
      *
-     * Adds a new head in the current direction
-     * Removes the tail (unless growing)
-     *
-     * @param none
      * @return void
      */
     public void move() {
 
-        // Get current head
-        Point head = body.getFirst();
-
-        // Calculate new head position
-        int newX = head.x + dx;
-        int newY = head.y + dy;
-
-        // Add new head
-        body.addFirst(new Point(newX, newY));
-
-        // Remove tail (normal movement)
-        body.removeLast();
-    }
-
-    /**
-     * Grows the snake (used when food is eaten)
-     *
-     * Adds a new segment without removing the tail
-     *
-     * @param none
-     * @return void
-     */
-    public void grow() {
-
-        // Get current head
         Point head = body.getFirst();
 
         int newX = head.x + dx;
         int newY = head.y + dy;
 
-        // Add new head, but DO NOT remove tail
         body.addFirst(new Point(newX, newY));
-    }
 
-    /**
-     * Draws the snake on the GamePanel
-     *
-     * @param panel the GamePanel to draw on
-     * @return void
-     */
-    public void draw(GamePanel panel) {
-
-        for (Point p : body) {
-            panel.setCellColor(p.y, p.x, Color.GREEN);
+        if (!grow) {
+            body.removeLast();
+        } else {
+            grow = false;
         }
     }
 
     /**
-     * Sets the direction of the snake
+     * Causes snake to grow next move
      *
-     * @param dx change in x direction
-     * @param dy change in y direction
      * @return void
      */
-    public void setDirection(int dx, int dy) {
-        this.dx = dx;
-        this.dy = dy;
+    public void grow() {
+        grow = true;
     }
 
     /**
-     * Gets the snake body
+     * Returns snake body
      *
-     * @param none
-     * @return LinkedList<Point> body segments
+     * @return LinkedList<Point>
      */
     public LinkedList<Point> getBody() {
         return body;
+    }
+
+    /**
+     * Returns snake head
+     *
+     * @return Point head location
+     */
+    public Point getHead() {
+        return body.getFirst();
     }
 }
