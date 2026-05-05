@@ -13,27 +13,45 @@
 * Java, Java, Java: Object-Oriented Problem Solving
 * https://open.umn.edu/opentextbooks/textbooks/java-java-java-object-oriented-problem-solving
 *
+*
+*Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
-* Version: 2026-04-22
+* Version: 2026-05-01
 */
 package snakegame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  * GamePanel class
  * -----------------------------------
  * Responsibility:
  * - Displays board
+ * - Runs game loop using Timer
+ * - Handles keyboard input
  * - Draws snake and food
- * - Detects food collision
  *
  * Relationships:
  * - Has-a CellButton[][]
  * - Has-a Snake
  * - Has-a Food
+ *
+ * Sources:
+ * - Oracle Swing Timer Tutorial
+ *   https://docs.oracle.com/javase/tutorial/uiswing/misc/timer.html
+ *   Video- used as referance
+ *   It mentioned a timer and decided to use one and used the Oracle Tutorial as help
+ *   Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
+ *
+ * Used for repeated game updates.
+ *
+ * Learning Outcomes:
+ * - LO2: 2D arrays
+ * - LO7: GUI
  */
 public class GamePanel extends JPanel {
 
@@ -49,8 +67,8 @@ public class GamePanel extends JPanel {
 
     /**
      * Constructor
-     *
-     * Creates board, snake, food, timer
+     * 
+     * Initializes board, snake, food, controls, and timer
      */
     public GamePanel() {
 
@@ -64,13 +82,16 @@ public class GamePanel extends JPanel {
 
         food = new Food();
         food.spawn(ROWS, COLS);
+        
+        setupKeyControls();
 
+        // Calls updateGame repeatedly
         timer = new Timer(300, e -> updateGame());
         timer.start();
     }
 
     /**
-     * Builds grid
+     * Builds board
      *
      * @return void
      */
@@ -80,19 +101,69 @@ public class GamePanel extends JPanel {
             for (int c = 0; c < COLS; c++) {
 
                 grid[r][c] = new CellButton();
+
                 add(grid[r][c]);
             }
         }
     }
+    
+    /**
+     * handles keyboard input
+     * 
+     * @return void
+     */
+    private void setupKeyControls() {
+
+        addKeyListener(new KeyAdapter() {
+
+            /**
+             * Detects key press
+             *
+             * @param e KeyEvent
+             * @return void
+             */
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+                int key = e.getKeyCode();
+
+                if (key == KeyEvent.VK_UP) {
+                    snake.setDirection(0, -1);
+                }
+                else if (key == KeyEvent.VK_DOWN) {
+                    snake.setDirection(0, 1);
+                }
+                else if (key == KeyEvent.VK_LEFT) {
+                    snake.setDirection(-1, 0);
+                }
+                else if (key == KeyEvent.VK_RIGHT) {
+                    snake.setDirection(1, 0);
+                }
+            }
+        });
+
+        setFocusable(true);
+        requestFocus();
+    }
 
     /**
-     * Updates game every timer tick
+     * Runs each timer step
      *
      * @return void
      */
     private void updateGame() {
 
         snake.move();
+
+        Point head = snake.getHead();
+
+        //stop game if snake hits wall
+        if (head.x < 0 || head.x >= COLS ||
+            head.y < 0 || head.y >= ROWS) {
+
+            timer.stop();
+            return;
+        }
 
         checkFoodCollision();
 
@@ -126,6 +197,7 @@ public class GamePanel extends JPanel {
     private void drawSnake() {
 
         for (Point p : snake.getBody()) {
+
             setCellColor(p.y, p.x, Color.GREEN);
         }
     }
@@ -143,15 +215,16 @@ public class GamePanel extends JPanel {
     }
 
     /**
-     * Sets cell color
+     * Sets one cell color
      *
-     * @param row row location
-     * @param col column location
-     * @param color color to use
+     * @param row row index
+     * @param col column index
+     * @param color desired color
      * @return void
      */
     public void setCellColor(int row, int col, Color color) {
-        grid[row][col].setBackground(color);
+
+        grid[row][col].setCellColor(color);
     }
 
     /**

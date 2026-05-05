@@ -12,10 +12,10 @@
 * Morelli, R., & Walde, R. (2016).
 * Java, Java, Java: Object-Oriented Problem Solving
 * https://open.umn.edu/opentextbooks/textbooks/java-java-java-object-oriented-problem-solving
-*
+*Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
-* Version: 2026-04-22
+* Version: 2026-05-01
 */
 package snakegame;
 
@@ -26,12 +26,17 @@ import java.util.LinkedList;
  * Snake class
  * -----------------------------------
  * Responsibility:
- * - Represents snake
+ * - Represents the snake
+ * - Stores body segments
  * - Handles movement and growth
  *
  * Relationships:
  * - GamePanel uses Snake
  * - Uses LinkedList<Point>
+ *
+ * Learning Outcomes:
+ * - LO3: Classes and objects
+ * - LO8: Data structures
  */
 public class Snake {
 
@@ -47,11 +52,12 @@ public class Snake {
      *
      * @param row starting row
      * @param col starting column
+     * @return none
      */
     public Snake(int row, int col) {
 
         body = new LinkedList<>();
-
+        //Point (x, y) = (col, row)
         body.add(new Point(col, row));
 
         dx = 1;
@@ -61,7 +67,7 @@ public class Snake {
     }
 
     /**
-     * Moves snake
+     * Moves snake one space
      *
      * @return void
      */
@@ -81,6 +87,23 @@ public class Snake {
         }
     }
 
+    /**
+     * Changes snake direction
+     * Prevents reversing into itself
+     * 
+     * @param newDx changes in x direction
+     * @param newDy changes in y direction
+     * @return void
+     */
+    public void setDirection(int newDx, int newDy) {
+    	//Prevent reverse movement
+    	if (dx + newDx == 0 && dy + newDy == 0) {
+    		return;
+    	}
+    	
+    	dx = newDx;
+    	dy = newDy;
+    }
     /**
      * Causes snake to grow next move
      *
@@ -102,7 +125,7 @@ public class Snake {
     /**
      * Returns snake head
      *
-     * @return Point head location
+     * @return Point head position
      */
     public Point getHead() {
         return body.getFirst();

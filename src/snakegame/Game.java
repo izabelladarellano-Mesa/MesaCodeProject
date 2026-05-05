@@ -12,10 +12,10 @@
 * Morelli, R., & Walde, R. (2016).
 * Java, Java, Java: Object-Oriented Problem Solving
 * https://open.umn.edu/opentextbooks/textbooks/java-java-java-object-oriented-problem-solving
-*
+*Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
-* Version: 2026-04-22
+* Version: 2026-05-01
 */
 package snakegame;
 
@@ -25,13 +25,24 @@ import javax.swing.JFrame;
  * Game class
  * -----------------------------------
  * Responsibility:
- * - Starts program
+ * - Starts the Snake Game program
+ * - Creates application window
  *
  * Relationships:
  * - Has-a GamePanel
+ *
+ * Learning Outcomes:
+ * - LO3: Classes and objects
+ * - LO7: GUI setup
  */
 public class Game {
 
+    /**
+     * Main method
+     *
+     * @param args command line arguments
+     * @return none
+     */
     public static void main(String[] args) {
 
         JFrame frame = new JFrame("Snake Game");
@@ -44,5 +55,6 @@ public class Game {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
+        panel.requestFocus();
     }
 }

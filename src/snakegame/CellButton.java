@@ -13,9 +13,10 @@
 * Java, Java, Java: Object-Oriented Problem Solving
 * https://open.umn.edu/opentextbooks/textbooks/java-java-java-object-oriented-problem-solving
 *
+*Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
-* Version: 2026-04-22
+* Version: 2026-05-01
 */
 package snakegame;
 
@@ -26,56 +27,65 @@ import java.awt.*;
  * CellButton class
  * -----------------------------------
  * Responsibility:
- * - Represents a single cell in the game board
- * - Encapsulates all button styling and behavior
+ * - Represents one cell on the board
+ * - Encapsulates button styling
  *
  * Relationships:
- * - Used by GamePanel (GamePanel has-a CellButton[][])
+ * - GamePanel has-a CellButton[][]
  *
- * Source:
- * - Based on Java Swing behavior where JButton appearance depends on Look & Feel.
- * - According to Oracle Swing documentation, properties like setOpaque(true)
- *   and setContentAreaFilled(true) may be required for background colors to display.
- *   // Source: Oracle Java Swing Tutorial - JButton
-// https://docs.oracle.com/javase/tutorial/uiswing/components/button.html
+ * Sources:
+ * - Oracle Swing Tutorial: JButton
+ *   https://docs.oracle.com/javase/tutorial/uiswing/components/button.html
+ *   Used for JButton appearance properties.
+ *-JButton will not display background color. (2015, April 21). Stack Overflow. https://stackoverflow.com/questions/29781275/jbutton-will-not-display-background-color
+ * Notes:
+ * - setOpaque(true) and setContentAreaFilled(true)
+ *   were used as help from a source that showed a similar issue of color not showing up
  *
  * Learning Outcomes:
- * - LO1: Object-Oriented Design (encapsulation)
- * - LO3: Objects and classes
+ * - LO1: Encapsulation
+ * - LO3: Classes and objects
  */
 public class CellButton extends JButton {
-	
+
     /**
-     * Constructor for CellButton
+     * Constructor
      *
-     * Initializes appearance and default state
-     *
-     * @param none
-     * @return none
+     * Initializes button appearance
      */
     public CellButton() {
 
-        // Ensure background color is visible (especially on macOS)
+        // Helps background colors render correctly
+    	//found it as Mac Compatibility - Stack Overflow website
         setOpaque(true);
         setContentAreaFilled(true);
 
-        // Add grid border
+        // Add border around each cell
         setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        // Default cell color (empty)
+        // Default empty color
         setBackground(Color.BLACK);
 
-        // Prevent focus highlight
+        // Remove focus outline
         setFocusable(false);
     }
 
     /**
-     * Clears the cell (resets to empty state)
+     * Clears cell color
      *
-     * @param none
      * @return void
      */
     public void clearCell() {
         setBackground(Color.BLACK);
+    }
+
+    /**
+     * Sets cell color
+     *
+     * @param color new color
+     * @return void
+     */
+    public void setCellColor(Color color) {
+        setBackground(color);
     }
 }

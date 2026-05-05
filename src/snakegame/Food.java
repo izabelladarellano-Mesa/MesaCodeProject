@@ -13,9 +13,11 @@
 * Java, Java, Java: Object-Oriented Problem Solving
 * https://open.umn.edu/opentextbooks/textbooks/java-java-java-object-oriented-problem-solving
 *
+*Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
+*Used as a reference and help if needed
 * <<Add more references here>>
 *
-* Version: 2026-04-27
+* Version: 2026-05-01
 */
 package snakegame;
 
@@ -26,37 +28,37 @@ import java.util.Random;
  * Food class
  * -----------------------------------
  * Responsibility:
- * - Represents food on the board
- * - Spawns in random locations
+ * - Represents food item
+ * - Spawns randomly on board
  *
  * Relationships:
- * - Used by GamePanel
- * - Uses Point to store position
+ * - GamePanel uses Food
+ *
+ * Sources:
+ * - Java API Documentation: java.util.Random
+ *   Used for random spawn locations.
  *
  * Learning Outcomes:
  * - LO3: Classes and objects
- * - LO2: Arrays (board positions)
  */
 public class Food {
 
-    // Food location
     private Point position;
 
-    // Random number generator
     private Random rand;
 
     /**
      * Constructor
-     *
-     * Creates Food object and random generator
      */
     public Food() {
+
         rand = new Random();
+
         position = new Point(0, 0);
     }
 
     /**
-     * Spawns food at random location
+     * Spawns food randomly
      *
      * @param rows total rows
      * @param cols total columns
