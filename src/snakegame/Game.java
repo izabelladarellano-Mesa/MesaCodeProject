@@ -15,7 +15,7 @@
 *Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
-* Version: 2026-05-01
+* Version: 2026-05-19
 */
 package snakegame;
 
@@ -28,8 +28,8 @@ import javax.swing.JFrame;
  * - Starts the Snake Game program
  * - Creates application window
  *
- * Relationships:
- * - Has-a GamePanel
+ *  * Relationships:
+ * - Uses GamePanel to display the game
  *
  * Learning Outcomes:
  * - LO3: Classes and objects
@@ -47,6 +47,7 @@ public class Game {
 
         JFrame frame = new JFrame("Snake Game");
 
+     // Game uses GamePanel to display the game
         GamePanel panel = new GamePanel();
 
         frame.add(panel);

@@ -17,12 +17,13 @@
 *Used as a reference and help if needed
 * <<Add more references here>>
 *
-* Version: 2026-05-01
+* Version: 2026-05-19
 */
 package snakegame;
 
 import java.awt.Point;
 import java.util.Random;
+import java.util.LinkedList;
 
 /**
  * Food class
@@ -31,8 +32,8 @@ import java.util.Random;
  * - Represents food item
  * - Spawns randomly on board
  *
- * Relationships:
- * - GamePanel uses Food
+ * - Relationships:
+ * - Used by GamePanel to track food position
  *
  * Sources:
  * - Java API Documentation: java.util.Random
@@ -40,6 +41,7 @@ import java.util.Random;
  *
  * Learning Outcomes:
  * - LO3: Classes and objects
+ * - LO5: Edge case handling
  */
 public class Food {
 
@@ -59,17 +61,25 @@ public class Food {
 
     /**
      * Spawns food randomly
+     * prevents spawning inside snake
      *
      * @param rows total rows
      * @param cols total columns
+     * @param snakeBody snake body position
      * @return void
      */
-    public void spawn(int rows, int cols) {
+    public void spawn(int rows, int cols,
+    					LinkedList<Point> snakeBody) {
 
-        int x = rand.nextInt(cols);
-        int y = rand.nextInt(rows);
+    	do {
 
-        position = new Point(x, y);
+    		int x = rand.nextInt(cols);
+
+    		int y = rand.nextInt(rows);
+	
+    		position = new Point(x, y);
+
+			} while (snakeBody.contains(position));
     }
 
     /**

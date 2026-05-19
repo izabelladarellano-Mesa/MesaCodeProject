@@ -15,7 +15,7 @@
 *Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
-* Version: 2026-05-01
+* Version: 2026-05-19
 */
 package snakegame;
 
@@ -30,9 +30,9 @@ import java.util.LinkedList;
  * - Stores body segments
  * - Handles movement and growth
  *
- * Relationships:
- * - GamePanel uses Snake
- * - Uses LinkedList<Point>
+ * - Relationships:
+ * - Used by GamePanel to manage snake state
+ * - Has-many body segments stored in LinkedList<Point>
  *
  * Learning Outcomes:
  * - LO3: Classes and objects
@@ -40,12 +40,20 @@ import java.util.LinkedList;
  */
 public class Snake {
 
-    private LinkedList<Point> body;
+	// Snake has-many body segments stored as Points
+	private LinkedList<Point> body;
 
-    private int dx;
-    private int dy;
+	// Horizontal movement direction
+	// -1 = left, 1 = right, 0 = no horizontal movement
+	private int dx;
 
-    private boolean grow;
+	// Vertical movement direction
+	// -1 = up, 1 = down, 0 = no vertical movement
+	private int dy;
+
+	// Determines whether snake should grow
+	// after the next movement update
+	private boolean grow;
 
     /**
      * Constructor

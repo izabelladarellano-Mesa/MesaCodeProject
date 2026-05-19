@@ -16,7 +16,7 @@
 *Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
-* Version: 2026-05-01
+* Version: 2026-05-19
 */
 package snakegame;
 
@@ -30,8 +30,8 @@ import java.awt.*;
  * - Represents one cell on the board
  * - Encapsulates button styling
  *
- * Relationships:
- * - GamePanel has-a CellButton[][]
+ * -Relationships:
+ * - CellButton objects are stored in GamePanel's 2D grid
  *
  * Sources:
  * - Oracle Swing Tutorial: JButton

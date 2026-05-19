@@ -17,7 +17,7 @@
 *Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
-* Version: 2026-05-01
+* Version: 2026-05-19
 */
 package snakegame;
 
@@ -34,11 +34,13 @@ import java.awt.event.KeyEvent;
  * - Runs game loop using Timer
  * - Handles keyboard input
  * - Draws snake and food
+ * - Detects collisions
+ * - Tracks score
  *
- * Relationships:
- * - Has-a CellButton[][]
- * - Has-a Snake
- * - Has-a Food
+ * - Relationships:
+ * - Stores many CellButtons in a 2D array
+ * - Uses Snake to manage snake movement
+ * - Uses Food to track food location
  *
  * Sources:
  * - Oracle Swing Timer Tutorial
@@ -51,19 +53,29 @@ import java.awt.event.KeyEvent;
  *
  * Learning Outcomes:
  * - LO2: 2D arrays
+ * - LO5: Collision handling
  * - LO7: GUI
+ * - LO8: Data structures
  */
 public class GamePanel extends JPanel {
 
     private final int ROWS = 10;
     private final int COLS = 10;
 
+    // GamePanel has-many CellButtons stored in a 2D array
     private CellButton[][] grid;
 
+    // GamePanel uses Snake to manage snake state
     private Snake snake;
+
+    // GamePanel uses Food to track food location
     private Food food;
 
+    // A GamePanel has-a Timer used to control the game loop and timed events
     private Timer timer;
+    
+    //Tracks player score
+    private int score;
 
     /**
      * Constructor
@@ -81,9 +93,16 @@ public class GamePanel extends JPanel {
         snake = new Snake(5, 5);
 
         food = new Food();
-        food.spawn(ROWS, COLS);
+       //prevents food from spawning inside snake
+        food.spawn(ROWS, COLS, snake.getBody());
+        
+        score = 0;
         
         setupKeyControls();
+        
+        drawFood();
+        
+        drawSnake();
 
         // Calls updateGame repeatedly
         timer = new Timer(300, e -> updateGame());
@@ -155,13 +174,11 @@ public class GamePanel extends JPanel {
 
         snake.move();
 
-        Point head = snake.getHead();
+        // End game if collision occurs
+        if (checkWallCollision() || checkSelfCollision()) {
 
-        //stop game if snake hits wall
-        if (head.x < 0 || head.x >= COLS ||
-            head.y < 0 || head.y >= ROWS) {
+            endGame();
 
-            timer.stop();
             return;
         }
 
@@ -175,6 +192,42 @@ public class GamePanel extends JPanel {
     }
 
     /**
+     * Detects wall collision
+     *
+     * @return true if collision occurs
+     */
+    private boolean checkWallCollision() {
+
+        Point head = snake.getHead();
+
+        return head.x < 0 ||
+               head.x >= COLS ||
+               head.y < 0 ||
+               head.y >= ROWS;
+    }
+    
+    /**
+     * Detects collision with snake body
+     *
+     * @return true if snake hits itself
+     */
+    private boolean checkSelfCollision() {
+
+        Point head = snake.getHead();
+
+        for (int i = 1; i < snake.getBody().size(); i++) {
+
+            if (head.equals(snake.getBody().get(i))) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    
+    /**
      * Checks if snake ate food
      *
      * @return void
@@ -185,9 +238,28 @@ public class GamePanel extends JPanel {
 
             snake.grow();
 
-            food.spawn(ROWS, COLS);
+            score++;
+
+            // Prevents food from spawning inside snake
+            food.spawn(ROWS, COLS, snake.getBody());
         }
     }
+    
+    /**
+     * Ends game
+     *
+     * @return void
+     */
+    private void endGame() {
+
+        timer.stop();
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Game Over!\nScore: " + score
+        );
+    }
+
 
     /**
      * Draws snake
@@ -200,7 +272,13 @@ public class GamePanel extends JPanel {
 
             setCellColor(p.y, p.x, Color.GREEN);
         }
+        
+        //draw snake head differently
+        Point head = snake.getHead();
+        
+        setCellColor(head.y, head.x, Color.YELLOW);
     }
+   
 
     /**
      * Draws food
