@@ -36,31 +36,29 @@ import java.awt.event.KeyEvent;
  * - Draws snake and food
  * - Detects collisions
  * - Tracks score
+ * - Saves and loads high scores
+ * - Handles restart features
  *
- * - Relationships:
+ * Relationships:
  * - Stores many CellButtons in a 2D array
  * - Uses Snake to manage snake movement
  * - Uses Food to track food location
- *
- * Sources:
- * - Oracle Swing Timer Tutorial
- *   https://docs.oracle.com/javase/tutorial/uiswing/misc/timer.html
- *   Video- used as referance
- *   It mentioned a timer and decided to use one and used the Oracle Tutorial as help
- *   Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
- *
- * Used for repeated game updates.
+ * - Uses HighScoreManager to save/load scores
  *
  * Learning Outcomes:
  * - LO2: 2D arrays
  * - LO5: Collision handling
- * - LO7: GUI
+ * - LO6: File IO
+ * - LO7: GUI and events
  * - LO8: Data structures
  */
 public class GamePanel extends JPanel {
 
-    private final int ROWS = 10;
-    private final int COLS = 10;
+	// Defines number of rows in the game board grid
+	private final int ROWS = 10;
+
+	// Defines number of columns in the game board grid
+	private final int COLS = 10;
 
     // GamePanel has-many CellButtons stored in a 2D array
     private CellButton[][] grid;
@@ -71,52 +69,92 @@ public class GamePanel extends JPanel {
     // GamePanel uses Food to track food location
     private Food food;
 
-    // A GamePanel has-a Timer used to control the game loop and timed events
+    // GamePanel has-a Timer used for repeated updates
     private Timer timer;
-    
-    //Tracks player score
+
+    // GamePanel uses HighScoreManager
+    // to save and load high scores
+    private HighScoreManager scoreManager;
+
+    // Stores current score earned during gameplay
     private int score;
+
+    // Stores highest saved score
+    private int highScore;
 
     /**
      * Constructor
-     * 
-     * Initializes board, snake, food, controls, and timer
+     *
+     * Initializes board, snake,
+     * food, controls, and timer
      */
     public GamePanel() {
 
-        grid = new CellButton[ROWS][COLS];
+        try {
 
-        setLayout(new GridLayout(ROWS, COLS));
+            grid = new CellButton[ROWS][COLS];
 
-        initializeGrid();
+            setLayout(new GridLayout(ROWS, COLS));
 
-        snake = new Snake(5, 5);
+            initializeGrid();
 
-        food = new Food();
-       //prevents food from spawning inside snake
-        food.spawn(ROWS, COLS, snake.getBody());
-        
-        score = 0;
-        
-        setupKeyControls();
-        
-        drawFood();
-        
-        drawSnake();
+            startNewGame();
+            
+            setupKeyControls();
 
-        // Calls updateGame repeatedly
-        timer = new Timer(300, e -> updateGame());
-        timer.start();
+            timer = new Timer(300, e -> updateGame());
+
+            timer.start();
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error initializing game:\n"
+                    + e.getMessage(),
+                    "Initialization Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            e.printStackTrace();
+        }
     }
 
+  /**
+   * Starts or restarts game
+   * 
+   *  @return void
+   */
+    private void startNewGame() {
+    	snake = new Snake (5, 5);
+    	
+    	food = new Food();
+    	
+    	scoreManager = new HighScoreManager();
+    	
+    	highScore = scoreManager.loadHighScore();
+    	
+    	food.spawn(ROWS, COLS, snake.getBody());
+    	
+    	score = 0;
+    	
+    	clearBoard();
+    	
+    	drawFood();
+    	
+    	drawSnake();
+    	
+    } 
+    
     /**
-     * Builds board
+     * Builds board grid
      *
      * @return void
      */
     private void initializeGrid() {
 
         for (int r = 0; r < ROWS; r++) {
+
             for (int c = 0; c < COLS; c++) {
 
                 grid[r][c] = new CellButton();
@@ -125,10 +163,10 @@ public class GamePanel extends JPanel {
             }
         }
     }
-    
+
     /**
-     * handles keyboard input
-     * 
+     * Handles keyboard input
+     *
      * @return void
      */
     private void setupKeyControls() {
@@ -138,7 +176,7 @@ public class GamePanel extends JPanel {
             /**
              * Detects key press
              *
-             * @param e KeyEvent
+             * @param e keyboard event
              * @return void
              */
             @Override
@@ -147,48 +185,70 @@ public class GamePanel extends JPanel {
                 int key = e.getKeyCode();
 
                 if (key == KeyEvent.VK_UP) {
+
                     snake.setDirection(0, -1);
-                }
-                else if (key == KeyEvent.VK_DOWN) {
+
+                } else if (key == KeyEvent.VK_DOWN) {
+
                     snake.setDirection(0, 1);
-                }
-                else if (key == KeyEvent.VK_LEFT) {
+
+                } else if (key == KeyEvent.VK_LEFT) {
+
                     snake.setDirection(-1, 0);
-                }
-                else if (key == KeyEvent.VK_RIGHT) {
+
+                } else if (key == KeyEvent.VK_RIGHT) {
+
                     snake.setDirection(1, 0);
                 }
             }
         });
 
         setFocusable(true);
+
         requestFocus();
     }
 
     /**
-     * Runs each timer step
+     * Updates game each timer step
      *
      * @return void
      */
     private void updateGame() {
 
-        snake.move();
+        try {
 
-        // End game if collision occurs
-        if (checkWallCollision() || checkSelfCollision()) {
+            snake.move();
 
-            endGame();
+            if (checkWallCollision()
+                    || checkSelfCollision()) {
 
-            return;
+                endGame();
+
+                return;
+            }
+
+            checkFoodCollision();
+
+            clearBoard();
+
+            drawFood();
+
+            drawSnake();
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error during game update:\n"
+                    + e.getMessage(),
+                    "Game Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            e.printStackTrace();
+
+            timer.stop();
         }
-
-        checkFoodCollision();
-
-        clearBoard();
-
-        drawFood();
-
-        drawSnake();
     }
 
     /**
@@ -200,12 +260,12 @@ public class GamePanel extends JPanel {
 
         Point head = snake.getHead();
 
-        return head.x < 0 ||
-               head.x >= COLS ||
-               head.y < 0 ||
-               head.y >= ROWS;
+        return head.x < 0
+                || head.x >= COLS
+                || head.y < 0
+                || head.y >= ROWS;
     }
-    
+
     /**
      * Detects collision with snake body
      *
@@ -215,9 +275,12 @@ public class GamePanel extends JPanel {
 
         Point head = snake.getHead();
 
-        for (int i = 1; i < snake.getBody().size(); i++) {
+        for (int i = 1;
+             i < snake.getBody().size();
+             i++) {
 
-            if (head.equals(snake.getBody().get(i))) {
+            if (head.equals(
+                    snake.getBody().get(i))) {
 
                 return true;
             }
@@ -226,7 +289,6 @@ public class GamePanel extends JPanel {
         return false;
     }
 
-    
     /**
      * Checks if snake ate food
      *
@@ -234,17 +296,21 @@ public class GamePanel extends JPanel {
      */
     private void checkFoodCollision() {
 
-        if (snake.getHead().equals(food.getPosition())) {
+        if (snake.getHead().equals(
+                food.getPosition())) {
 
             snake.grow();
 
             score++;
 
-            // Prevents food from spawning inside snake
-            food.spawn(ROWS, COLS, snake.getBody());
+            food.spawn(
+                    ROWS,
+                    COLS,
+                    snake.getBody()
+            );
         }
     }
-    
+
     /**
      * Ends game
      *
@@ -254,12 +320,35 @@ public class GamePanel extends JPanel {
 
         timer.stop();
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Game Over!\nScore: " + score
-        );
-    }
+        // Save new high score
+        if (score > highScore) {
 
+            highScore = score;
+
+            scoreManager.saveHighScore(
+                    highScore
+            );
+        }
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Game Over!"
+                + "\nScore: " + score
+                + "\nHigh Score: " + highScore
+                + "\n\nRestart Game?",
+                "Snake Game",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (choice == JOptionPane.YES_OPTION) {
+
+            startNewGame();
+
+            timer.start();
+        } else {
+        	System.exit(0);
+        }
+    }
 
     /**
      * Draws snake
@@ -270,15 +359,22 @@ public class GamePanel extends JPanel {
 
         for (Point p : snake.getBody()) {
 
-            setCellColor(p.y, p.x, Color.GREEN);
+            setCellColor(
+                    p.y,
+                    p.x,
+                    Color.GREEN
+            );
         }
-        
-        //draw snake head differently
+
+        // Draw snake head differently
         Point head = snake.getHead();
-        
-        setCellColor(head.y, head.x, Color.YELLOW);
+
+        setCellColor(
+                head.y,
+                head.x,
+                Color.YELLOW
+        );
     }
-   
 
     /**
      * Draws food
@@ -289,7 +385,11 @@ public class GamePanel extends JPanel {
 
         Point p = food.getPosition();
 
-        setCellColor(p.y, p.x, Color.RED);
+        setCellColor(
+                p.y,
+                p.x,
+                Color.RED
+        );
     }
 
     /**
@@ -300,9 +400,13 @@ public class GamePanel extends JPanel {
      * @param color desired color
      * @return void
      */
-    public void setCellColor(int row, int col, Color color) {
+    public void setCellColor(
+            int row,
+            int col,
+            Color color) {
 
-        grid[row][col].setCellColor(color);
+        grid[row][col]
+                .setCellColor(color);
     }
 
     /**
@@ -313,7 +417,10 @@ public class GamePanel extends JPanel {
     public void clearBoard() {
 
         for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLS; c++) {
+
+            for (int c = 0;
+                 c < COLS;
+                 c++) {
 
                 grid[r][c].clearCell();
             }

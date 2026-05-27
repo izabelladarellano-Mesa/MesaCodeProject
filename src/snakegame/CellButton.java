@@ -13,7 +13,7 @@
 * Java, Java, Java: Object-Oriented Problem Solving
 * https://open.umn.edu/opentextbooks/textbooks/java-java-java-object-oriented-problem-solving
 *
-*Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
+* Code snake game in Java. (2023, July 19). YouTube. https://youtu.be/Y62MJny9LHg?si=hgmfGnfVQsrohxyY
 * <<Add more references here>>
 *
 * Version: 2026-05-19
@@ -61,7 +61,7 @@ public class CellButton extends JButton {
         setContentAreaFilled(true);
 
         // Add border around each cell
-        setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 
         // Default empty color
         setBackground(Color.BLACK);

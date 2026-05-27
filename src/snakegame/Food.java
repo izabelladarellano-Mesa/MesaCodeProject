@@ -22,8 +22,8 @@
 package snakegame;
 
 import java.awt.Point;
-import java.util.Random;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  * Food class
@@ -32,12 +32,10 @@ import java.util.LinkedList;
  * - Represents food item
  * - Spawns randomly on board
  *
- * - Relationships:
+ * Relationships:
  * - Used by GamePanel to track food position
- *
- * Sources:
- * - Java API Documentation: java.util.Random
- *   Used for random spawn locations.
+ * - Uses Random to generate spawn locations
+ * - Has-a Point representing food location
  *
  * Learning Outcomes:
  * - LO3: Classes and objects
@@ -45,8 +43,10 @@ import java.util.LinkedList;
  */
 public class Food {
 
+    // Food has-a Point representing location
     private Point position;
 
+    // Food uses Random for spawn locations
     private Random rand;
 
     /**
@@ -61,25 +61,37 @@ public class Food {
 
     /**
      * Spawns food randomly
-     * prevents spawning inside snake
+     * Prevents spawning inside snake
      *
      * @param rows total rows
      * @param cols total columns
-     * @param snakeBody snake body position
+     * @param snakeBody snake body positions
      * @return void
      */
-    public void spawn(int rows, int cols,
-    					LinkedList<Point> snakeBody) {
+    public void spawn(int rows,
+                      int cols,
+                      LinkedList<Point> snakeBody) {
 
-    	do {
+        try {
 
-    		int x = rand.nextInt(cols);
+            do {
 
-    		int y = rand.nextInt(rows);
-	
-    		position = new Point(x, y);
+                int x = rand.nextInt(cols);
 
-			} while (snakeBody.contains(position));
+                int y = rand.nextInt(rows);
+
+                position = new Point(x, y);
+
+            } while (snakeBody.contains(position));
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Error spawning food."
+            );
+
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -88,6 +100,7 @@ public class Food {
      * @return Point food location
      */
     public Point getPosition() {
+
         return position;
     }
 }
