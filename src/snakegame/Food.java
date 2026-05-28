@@ -66,34 +66,21 @@ public class Food {
      * @param rows total rows
      * @param cols total columns
      * @param snakeBody snake body positions
-     * @return void
      */
     public void spawn(int rows,
                       int cols,
                       LinkedList<Point> snakeBody) {
 
-        try {
+        do {
 
-            do {
+            int x = rand.nextInt(cols);
 
-                int x = rand.nextInt(cols);
+            int y = rand.nextInt(rows);
 
-                int y = rand.nextInt(rows);
+            position = new Point(x, y);
 
-                position = new Point(x, y);
-
-            } while (snakeBody.contains(position));
-
-        } catch (Exception e) {
-
-            System.out.println(
-                    "Error spawning food."
-            );
-
-            e.printStackTrace();
-        }
+        } while (snakeBody.contains(position));
     }
-
     /**
      * Returns food position
      *

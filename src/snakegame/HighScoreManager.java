@@ -47,19 +47,14 @@ public class HighScoreManager {
      * Saves high score to file
      *
      * @param score score to save
-     * @return void
      */
     public void saveHighScore(int score) {
 
-        try {
-
-            PrintWriter writer = new PrintWriter(
-                    new FileWriter(FILE_NAME)
-            );
+        try (PrintWriter writer =
+                     new PrintWriter(
+                             new FileWriter(FILE_NAME))) {
 
             writer.println(score);
-
-            writer.close();
 
         } catch (IOException e) {
 
@@ -78,29 +73,24 @@ public class HighScoreManager {
      */
     public int loadHighScore() {
 
-        try {
+        File file = new File(FILE_NAME);
 
-            File file = new File(FILE_NAME);
+        // Return 0 if file does not exist yet
+        if (!file.exists()) {
 
-            // Return 0 if file does not exist yet
-            if (!file.exists()) {
+            return 0;
+        }
 
-                return 0;
-            }
+        try (BufferedReader reader =
+                     new BufferedReader(
+                             new FileReader(file))) {
 
-            BufferedReader reader = new BufferedReader(
-                    new FileReader(file)
-            );
-
-            int score = Integer.parseInt(
+            return Integer.parseInt(
                     reader.readLine()
             );
 
-            reader.close();
-
-            return score;
-
-        } catch (IOException | NumberFormatException e) {
+        } catch (IOException
+                 | NumberFormatException e) {
 
             System.out.println(
                     "Error loading high score."

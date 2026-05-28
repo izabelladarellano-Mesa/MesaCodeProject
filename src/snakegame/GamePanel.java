@@ -52,6 +52,7 @@ import java.awt.event.KeyEvent;
  * - LO7: GUI and events
  * - LO8: Data structures
  */
+//GamePanel is-a JPanel
 public class GamePanel extends JPanel {
 
 	// Defines number of rows in the game board grid

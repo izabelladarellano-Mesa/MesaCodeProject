@@ -30,8 +30,10 @@ import java.awt.*;
  * - Represents one cell on the board
  * - Encapsulates button styling
  *
- * -Relationships:
- * - CellButton objects are stored in GamePanel's 2D grid
+ * * Relationships:
+ * - CellButton is-a JButton
+ * - CellButton objects are stored
+ *   in GamePanel's grid
  *
  * Sources:
  * - Oracle Swing Tutorial: JButton
@@ -46,6 +48,7 @@ import java.awt.*;
  * - LO1: Encapsulation
  * - LO3: Classes and objects
  */
+//cellbutton is-a JButton
 public class CellButton extends JButton {
 
     /**
