@@ -39,11 +39,12 @@ import java.awt.event.KeyEvent;
  * - Saves and loads high scores
  * - Handles restart features
  *
- * Relationships:
- * - Stores many CellButtons in a 2D array
- * - Uses Snake to manage snake movement
- * - Uses Food to track food location
- * - Uses HighScoreManager to save/load scores
+ *  Relationships:
+ * - GamePanel is-a JPanel
+ * - GamePanel has-many CellButtons
+ * - GamePanel has-a Snake
+ * - GamePanel has-a Food
+ * - GamePanel has-a HighScoreManager
  *
  * Learning Outcomes:
  * - LO2: 2D arrays
@@ -52,7 +53,7 @@ import java.awt.event.KeyEvent;
  * - LO7: GUI and events
  * - LO8: Data structures
  */
-//GamePanel is-a JPanel
+	//GamePanel is-a JPanel
 public class GamePanel extends JPanel {
 
 	// Defines number of rows in the game board grid
@@ -64,23 +65,23 @@ public class GamePanel extends JPanel {
     // GamePanel has-many CellButtons stored in a 2D array
     private CellButton[][] grid;
 
-    // GamePanel uses Snake to manage snake state
+    // GamePanel has-a Snake used to manage snake state
     private Snake snake;
 
-    // GamePanel uses Food to track food location
+    // GamePanel has-a Food object used to track food location
     private Food food;
 
     // GamePanel has-a Timer used for repeated updates
     private Timer timer;
 
-    // GamePanel uses HighScoreManager
-    // to save and load high scores
+    // GamePanel has-a HighScoreManager used to save
+    // and load high scores
     private HighScoreManager scoreManager;
-
-    // Stores current score earned during gameplay
+   
+    // GamePanel has-a current score value
     private int score;
 
-    // Stores highest saved score
+    // GamePanel has-a high score value
     private int highScore;
 
     /**

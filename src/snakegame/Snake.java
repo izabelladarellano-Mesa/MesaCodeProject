@@ -44,18 +44,15 @@ public class Snake {
 	// Snake has-many body segments stored as Points
 	private LinkedList<Point> body;
 
-	// Horizontal movement direction
-	// -1 = left, 1 = right, 0 = no horizontal movement
+	// Snake has-a horizontal movement direction value
 	private int dx;
 
-	// Vertical movement direction
-	// -1 = up, 1 = down, 0 = no vertical movement
+	// Snake has-a vertical movement direction value
 	private int dy;
 
-	// Determines whether snake should grow
-	// after the next movement update
+	// Snake has-a growth flag used to determine
+	// whether the snake grows on the next move
 	private boolean grow;
-
     /**
      * Constructor
      *

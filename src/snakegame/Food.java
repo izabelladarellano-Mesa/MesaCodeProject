@@ -43,11 +43,12 @@ import java.util.Random;
  */
 public class Food {
 
-    // Food has-a Point representing location
-    private Point position;
+	// Food has-a Point representing its location
+	private Point position;
 
-    // Food uses Random for spawn locations
-    private Random rand;
+	// Food has-a Random object used to generate
+	// random spawn locations
+	private Random rand;
 
     /**
      * Constructor
@@ -71,7 +72,10 @@ public class Food {
                       int cols,
                       LinkedList<Point> snakeBody) {
 
-        do {
+      // Continue generating random positions
+      // until a location is found that is not
+     // already occupied by the snake's body
+    	do {
 
             int x = rand.nextInt(cols);
 
